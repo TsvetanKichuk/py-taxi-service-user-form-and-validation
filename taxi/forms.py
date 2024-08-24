@@ -9,23 +9,28 @@ from taxi.models import Driver, Car
 class DriverCreationForm(UserCreationForm):
     class Meta:
         model = Driver
-        fields = UserCreationForm.Meta.fields
+        fields = UserCreationForm.Meta.fields + (
+            "license_number",
+            "first_name",
+            "last_name",
+        )
 
 
 class DriverLicenseUpdateForm(forms.ModelForm):
     license_number = forms.CharField(
-        label='Driver License Number',
+        label="Driver License Number",
         validators=[
             RegexValidator(
-                r'^[A-Z]{3}\d{5}$',
-                message='Driver license number must consist of 8 characters: 3 uppercase letters followed by 5 digits.'
+                r"^[A-Z]{3}\d{5}$",
+                message="Driver license number must consist of 8 "
+                        "characters: 3 uppercase letters followed by 5 digits."
             )
         ]
     )
 
     class Meta:
         model = Driver
-        fields = UserCreationForm.Meta.fields
+        fields = ("license_number", )
 
 
 class CarCreationForm(forms.ModelForm):
