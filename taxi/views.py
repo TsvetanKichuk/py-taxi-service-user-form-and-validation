@@ -3,6 +3,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse_lazy
 from django.views import generic
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.views.generic import View
 
 from taxi.forms import (
     DriverCreationForm,
@@ -112,15 +113,17 @@ class DriverLicenseUpdateView(LoginRequiredMixin, generic.UpdateView):
     success_url = reverse_lazy("taxi:driver-list")
 
 
-@login_required
-def assign_driver(request, car_id):
-    car = get_object_or_404(Car, id=car_id)
-    car.drivers.add(request.user)
-    return redirect("taxi:car-detail", pk=car.id)
+class AssignDriverView(LoginRequiredMixin, View):
+    @staticmethod
+    def post(request, car_id):
+        car = get_object_or_404(Car, id=car_id)
+        car.drivers.add(request.user)
+        return redirect("taxi:car-detail", pk=car.id)
 
 
-@login_required
-def remove_driver(request, car_id):
-    car = get_object_or_404(Car, id=car_id)
-    car.drivers.remove(request.user)
-    return redirect("taxi:car-detail", pk=car.id)
+class RemoveDriverView(LoginRequiredMixin, View):
+    @staticmethod
+    def post(request, car_id):
+        car = get_object_or_404(Car, id=car_id)
+        car.drivers.remove(request.user)
+        return redirect("taxi:car-detail", pk=car.id)
